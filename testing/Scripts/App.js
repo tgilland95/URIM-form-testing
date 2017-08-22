@@ -72,9 +72,6 @@ function submitForm() {
 	}
 }
 function cancelForm() {
-    if (!window.confirm(confirmCancelMessage)) {
-        return
-    }
     closeWindow();
 }
 function makePdf() {
@@ -287,7 +284,8 @@ function makePdf() {
 	};
 	var doc = pdfMake.createPdf(dd).getBuffer(b => {
 		var utf8 = new Uint8Array(b);
-		saveFormPdfToServer(utf8.buffer, folderName, dt + cur.login + '.pdf');
+        saveFormPdfToServer(utf8.buffer, folderName, dt + cur.login + '.pdf').then(function () {
+            closeWindow();        });
 	});
 	function saveFormPdfToServer(pdfArrayBuffer, folderName, fileName) {
 		return $.ajax({
@@ -304,15 +302,15 @@ function makePdf() {
                 if (!alertUser()) {
                     return;                    
                 }
-                window.close();
-			}
+                closeWindow();
+            }
 		});
 	}
 }
 
 function closeWindow() {
-    window.close();
-}
+    window.parent.location.href = hostweburl;}
 function alertUser() {                                                                        
     window.alert('Your form uploaded successfully');
 }
+
